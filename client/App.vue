@@ -21,7 +21,7 @@ export default {
 	FooterBar,
 	NprogressContainer
   },
-  
+
 
   beforeMount () {
 	const { body } = document

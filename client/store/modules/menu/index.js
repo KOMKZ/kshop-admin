@@ -7,27 +7,27 @@ import lazyLoading from './lazyLoading'
 
 const state = {
   items: [
-	{
+    {
 	  name: '首页',
 	  path: '/',
 	  meta: {
-		icon: 'fa-tachometer',
-		link: 'Home.vue'
+    icon: 'fa-tachometer',
+    link: 'Home.vue'
 	  },
 	  component: lazyLoading('home', true)
-	}
+    },
   ]
 }
 
 const mutations = {
   [types.EXPAND_MENU] (state, menuItem) {
-	if (menuItem.index > -1) {
+    if (menuItem.index > -1) {
 	  if (state.items[menuItem.index] && state.items[menuItem.index].meta) {
-		state.items[menuItem.index].meta.expanded = menuItem.expanded
+    state.items[menuItem.index].meta.expanded = menuItem.expanded
 	  }
-	} else if (menuItem.item && 'expanded' in menuItem.item.meta) {
+    } else if (menuItem.item && 'expanded' in menuItem.item.meta) {
 	  menuItem.item.meta.expanded = menuItem.expanded
-	}
+    }
   }
 }
 
