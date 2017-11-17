@@ -13,11 +13,19 @@ export default new Router({
 	  path: '/',
 	  component: require('../views/Home')
 	},
+<<<<<<< HEAD
 	{
 	  name: "Login",
 	  path: "/login",
 	  component: require("../views/user/UserLogin")
 	},
+=======
+    {
+      name: "Login",
+      path: "/login",
+      component: require('../views/user/Login')
+    },
+>>>>>>> a63b6481b824dc7eeb65cb9cd6a0360d36b34714
 	...generateRoutesFromMenu(menuModule.state.items),
 	{
 	  path: '*',
