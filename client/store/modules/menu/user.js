@@ -19,5 +19,13 @@ export default {
 		link: 'user/list.vue'
 	  }
 	}
+	,{
+	  name: '创建用户',
+	  path: 'create',
+	  component: lazyLoading('user/create'),
+	  meta: {
+		link: 'user/create.vue'
+	  }
+	}
   ]
 }

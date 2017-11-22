@@ -11,45 +11,53 @@ axios.interceptors.request.use(config => {
 	return Promise.reject(error)
 })
 
-axios.interceptors.response.use(response => response, error => Promise.resolve(error.response))
+// axios.interceptors.response.use(response => response, error => {
+// 	Promise.resolve(error.response)
+// })
 
-function checkStatus(response) {
-	NProgress.done()
-	if (response.status === 200 || response.status === 304) {
-		return response
+function checkRes(res){
+	if(res.status != 200 && res.status != 302){
+		return Promise.reject({
+			code : res.status,
+			message : res.statusText
+		})
 	}
-	return {
-		data: {
-			code: response.status,
-			message: response.statusText,
-			data: response.data,
-		}
+	let resData = res.data
+	if(resData.code > 0){
+		return Promise.reject({
+			code : resData.code,
+			message : resData.message
+		})
 	}
+	return resData
 }
 
-function checkCode(res) {
-	if (res.data.code != 0) {
+function handleError(error){
+	if(new Set([400, 500, 401]).has(error.code)){
 		openNotification({
-			message: res.data.data.message || res.data.message,
-			type: "danger"
+			message : error.message,
+			type: 'danger'
 		})
-		if(401 == res.data.code){
-			router.replace({
-				path: '/login',
-				query: {redirect: router.currentRoute.fullPath}
-			})
-			return Promise.reject(res)
-		}
 	}
-	return res.data
+	if(401 == error.code){
+		router.replace({
+			path: '/login',
+			query: {redirect: router.currentRoute.fullPath}
+		})
+	}
+	return Promise.reject(error)
 }
 
 
 export default {
+	base : 'http://localhost:8011',
+	getUrl (api) {
+		return this.base.trim('/') + api;
+	},
 	post(url, data) {
 		return axios({
 			method: 'post',
-			url,
+			url: this.getUrl(url),
 			data: qs.stringify(data),
 			timeout: 30000,
 			headers: {
@@ -57,20 +65,21 @@ export default {
 				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 			}
 		})
-		.then(checkStatus)
-		.then(checkCode)
+		.then(checkRes)
+		.catch(handleError)
+
 	},
 	get(url, params) {
 		return axios({
 			method: 'get',
-			url,
+			url: this.getUrl(url),
 			params,
 			timeout: 30000,
 			headers: {
 				'X-Requested-With': 'XMLHttpRequest'
 			}
 		})
-		.then(checkStatus)
-		.then(checkCode)
+		.then(checkRes)
+		.catch(handleError)
 	}
 }

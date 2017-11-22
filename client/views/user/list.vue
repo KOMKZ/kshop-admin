@@ -13,10 +13,10 @@ import api from "units/api"
 export default {
 	methods : {
 		getUserList(){
-			let url = 'http://localhost:8011/user/list'
+			let url = '/user/list'
 			api.get(url)
 			.then((res) => {
-				console.log(res)
+				// console.log(res)
 			})
 		}
 	}

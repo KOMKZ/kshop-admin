@@ -21,10 +21,9 @@ Vue.use(VueAuth, {
 	},
 	response: function (res) {
 	  let resData = res.data;
-	  if(resData.code > 0){
-		  throw new Error(resData.message)
+	  if(resData.code == 0){
+		  return resData.data.jwt
 	  }
-	  return resData.data.jwt
 	}
   },
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
@@ -62,5 +61,16 @@ const app = new Vue({
   nprogress,
   ...App
 })
-
+axios.interceptors.response.use(response => {return response}, error => {
+	if(401 == error.response.status){
+		if(app.$auth.check()){
+			app.$auth.logout({makeRequest:false, redirect: ''})
+		}
+		return Promise.reject({
+			message : error.response.data.message,
+			code : error.response.data.code
+		})
+	}
+	return error.response
+})
 export { app, router, store }
