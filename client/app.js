@@ -9,10 +9,16 @@ import router from './router'
 import store from './store'
 import * as filters from './filters'
 import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
+import VeeValidate, {Validator} from 'vee-validate';
+import ValidateCnMessage from "vee-validate/dist/locale/zh_CN"
 
 
 
 Vue.router = router
+Validator.addLocale(ValidateCnMessage);
+Vue.use(VeeValidate, {
+	locale : 'zh_CN'
+})
 Vue.use(VueAxios, axios)
 Vue.use(VueAuth, {
   auth: {

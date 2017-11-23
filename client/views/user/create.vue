@@ -2,51 +2,14 @@
 	<div class="tile is-ancestor">
 		<div class="tile is-parent is-4">
 			<div class="tile is-child box">
-				<form v-on:submit.prevent="create">
+				<form v-on:submit.prevent="sendCreate">
 					<div class="block">
-						<label class="label">用户名</label>
-						<p class="control" :class="[getHasIconClass]">
-						  <input class="input is-danger" v-model="data.body.u_username" type="text" placeholder="">
-						  <span class="icon is-small">
-							<i class="fa fa-warning"></i>
-						  </span>
-						  <span class="help is-danger">{{error.u_username}}</span>
-						</p>
-
-						<label class="label">密码</label>
-						<p class="control">
-						  <input class="input" v-model="data.body.password" type="password" placeholder="">
-						</p>
-
-						<label class="label">密码确认</label>
-						<p class="control">
-						  <input class="input" v-model="data.body.password_confirm" type="password" placeholder="">
-						</p>
-
-						<label class="label">邮箱</label>
-						<p class="control">
-						  <input class="input" v-model="data.body.u_email" type="email" placeholder="">
-						</p>
-
-						<label class="label">状态</label>
-						<p class="control">
-						  <span class="select">
-							<select v-model="data.body.u_status">
-							  <option>请选择</option>
-							  <option v-for="(label, val) in enums.u_status" :value="val">{{label}}</option>
-							</select>
-						  </span>
-						</p>
-
-						<label class="label">验证状态</label>
-						<p class="control">
-						  <span class="select">
-							<select v-model="data.body.u_auth_status">
-							  <option>请选择</option>
-							  <option v-for="(label, val) in enums.u_auth_status" :value="val">{{label}}</option>
-							</select>
-						  </span>
-						</p>
+						<active-field :field="dataFields.u_username" v-model="data.body.u_username"></active-field>
+						<active-field :field="dataFields.password" v-model="data.body.password"></active-field>
+						<active-field :field="dataFields.password_confirm" v-model="data.body.password_confirm"></active-field>
+						<active-field :field="dataFields.u_email" v-model="data.body.u_email"></active-field>
+						<active-field :type="'dropdown'" :field="dataFields.u_status" v-model="data.body.u_status"></active-field>
+						<active-field :type="'dropdown'" :field="dataFields.u_auth_status" v-model="data.body.u_auth_status"></active-field>
 
 						<p class="control">
 						  <button class="button is-primary">创建</button>
@@ -60,51 +23,84 @@
 
 <script>
 import api from "units/api"
+import activeField from "components/form/activeField"
+import {openNotification} from 'units'
+
 export default {
+	components : {
+		activeField
+	},
 	data () {
+		let vue = this
 		return {
+			dataFields : {
+				u_username : {
+					label : '用户名',
+					name : 'u_username',
+					rules : 'required'
+				}
+				,password : {
+					label : '密码',
+					name : 'password',
+					rules : 'required',
+					type: 'password'
+				}
+				,password_confirm : {
+					label : '确认密码',
+					name : 'password_confirm',
+					rules : 'required',
+					type: 'password'
+				}
+				,u_email : {
+					label : '邮箱',
+					name : 'u_email',
+					rules : 'required|email',
+				}
+				,u_auth_status : {
+					label : '验证状态',
+					name : 'u_email',
+					rules : 'required',
+					default : 'had_auth',
+					enums : {
+						no_auth: '没有验证'
+						,had_auth: '已经验证'
+					}
+				}
+				,u_status : {
+					label : '用户状态',
+					name : 'u_email',
+					rules : 'required',
+					default : 'active',
+					enums : {
+						active: '激活状态'
+						,not_auth: "未激活状态"
+					}
+				}
+			},
 			data : {
 				body : {
 					u_username : null,
 					password : null,
 					password_confirm: null,
 					u_email: null,
-					u_auth_status : 'had_auth',
-					u_status : 'active'
+					u_auth_status : null,
+					u_status : null
 				}
 			}
-			,error : {
-				u_username : null,
-				u_email : null
-			}
+
 		}
 	},
 	methods : {
-		create : function(){
+		sendCreate : function(){
+			this.$emit('formSubmit')
+			return true
 			api.post('/user/create', this.data.body)
 			.then((res) => {
 				console.log("succ", res)
 			})
 			.catch(error => {
-				console.log(error, vue)
+				console.log(error)
 			})
-		}
-	},
-	computed : {
-		getHasIconClass(name){
-			return this.error.name ? ['has-icon has-icon-right'] : ''
-		},
-		enums (){
-			return {
-				u_auth_status : {
-					no_auth: '没有验证'
-					,had_auth: '已经验证'
-				}
-				,u_status: {
-					active: '激活状态'
-					,not_auth: "未激活状态"
-				}
-			}
 		}
 	}
 }

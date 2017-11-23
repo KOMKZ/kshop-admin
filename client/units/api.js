@@ -6,6 +6,7 @@ import router from 'src/router'
 
 axios.interceptors.request.use(config => {
 	NProgress.start()
+	console.log(config)
 	return config
 }, error => {
 	return Promise.reject(error)
