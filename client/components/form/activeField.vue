@@ -5,7 +5,7 @@
 		  <input
 		  v-validate="field.rules"
 		  :class="{'input':true, 'is-danger': errors.has(field.name)}"
-		  :value="realValue"
+		  :value="value"
 		  :name="field.name"
 		  v-on:input="updateValue($event.target.value)"
 		  :type="field.type ? field.type : 'text'"
@@ -24,7 +24,7 @@
 			<select
 			v-validate="field.rules"
 			v-on:change="updateValue($event.target.value)"
-			:value="realValue"
+			:value="value"
 			:name="field.name">
 			  <option :value="null">请选择</option>
 			  <option v-for="(label, val) in field.enums" :value="val">{{label}}</option>
@@ -36,25 +36,19 @@
 </template>
 
 <script>
+import bus from "units/bus"
+import { find, propEq } from 'ramda'
+
 export default {
 	props : [
 		"field",
 		"value",
 		"type"
 	]
-	,computed : {
-		realValue(){
-			return this.field.default ? this.field.default : null
-		}
-	}
+	,inject : ["$validator"]
 	,methods : {
 		updateValue(value){
 			this.$emit('input', value);
-		}
-		,test(){
-			this.$validator.validateAll().then(result  => {
-				console.log(result)
-			})
 		}
 	}
 }
