@@ -18,15 +18,17 @@ axios.interceptors.request.use(config => {
 function checkRes(res){
 	if(res.status != 200 && res.status != 302){
 		return Promise.reject({
-			code : res.status,
-			message : res.statusText
+			code : res.status
+			,message : res.statusText
+			,from_server : true
 		})
 	}
 	let resData = res.data
 	if(resData.code > 0){
 		return Promise.reject({
-			code : resData.code,
-			message : resData.message
+			code : resData.code
+			,message : resData.message
+			,from_server : true
 		})
 	}
 	return resData

@@ -11,10 +11,15 @@ import * as filters from './filters'
 import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
 import VeeValidate, {Validator} from 'vee-validate';
 import ValidateCnMessage from "vee-validate/dist/locale/zh_CN"
+import activeField from "components/form/activeField"
+
 
 
 
 Vue.router = router
+// add global components
+Vue.component('active-field', activeField)
+// vee-validate plugins
 Validator.addLocale(ValidateCnMessage);
 Vue.use(VeeValidate, {
 	locale : 'zh_CN'
@@ -73,10 +78,29 @@ axios.interceptors.response.use(response => {return response}, error => {
 			app.$auth.logout({makeRequest:false, redirect: ''})
 		}
 		return Promise.reject({
-			message : error.response.data.message,
-			code : error.response.data.code
+			message : error.response.data.message
+			,code : error.response.data.code
+			,from_server : true
 		})
 	}
 	return error.response
 })
+Validator.extend('ksConfirmed', {
+  getMessage(field, args){
+	  return `${field} 和 ${args[0]} 的值不匹配`
+  },
+  validate(value, args){
+	  if(args.length > 0){
+		  let el = app.$el.querySelector(`input[name=${args[0]}]`)
+		  if(!el){
+			  return false
+		  }
+		  if(String(value) === String(el.value)){
+			  return true
+		  }else{
+			  return false
+		  }
+	  }
+  }
+});
 export { app, router, store }

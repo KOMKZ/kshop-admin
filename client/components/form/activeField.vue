@@ -39,6 +39,7 @@
 import bus from "units/bus"
 import { find, propEq } from 'ramda'
 
+
 export default {
 	props : [
 		"field",
@@ -48,7 +49,7 @@ export default {
 	,inject : ["$validator"]
 	,methods : {
 		updateValue(value){
-			this.$emit('input', value);
+			this.$emit('input', value)
 		}
 	}
 }

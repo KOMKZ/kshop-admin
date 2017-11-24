@@ -22,18 +22,15 @@
 
 <script>
 import api from "units/api"
-import activeField from "components/form/activeField"
 import {
 	openNotification
 	,populateDefValToModel
+	,populateBkErrsToModel
 } from 'units'
 import bus from "units/bus"
 
 export default {
-	components : {
-		activeField
-	}
-	,data () {
+	data () {
 		let vue = this
 		return {
 			dataFields : {
@@ -53,9 +50,9 @@ export default {
 				,password_confirm : {
 					label : '确认密码'
 					,name : 'password_confirm'
-					,rules : 'required|confirmed:password'
+					,rules : 'required|ksConfirmed:password'
 					,type: 'password'
-					,default: 'philipsabc'
+					,default: 'philips'
 				}
 				,u_email : {
 					label : '邮箱'
@@ -103,25 +100,24 @@ export default {
 			this.$validator.validateAll()
 			.then((validateResult) => {
 				return validateResult ? Promise.resolve(true) : Promise.reject({
-					type : 'client',
-					errors : this.errors
+					from_server : false
+					,code : 1
+					,message : this.errors.collect()
 				})
 			})
 			.then((result) => {
 				return api.post('/user/create', this.body)
 			})
 			.then((result) => {
-				console.log(result)
+				openNotification({message : "创建用户成功", type : "success"})
 			})
 			.catch(err => {
-				if('client' == err.type){
-					console.log(err.errors.collect())
+				if(err.from_server){
+					populateBkErrsToModel(this.errors, err.message)
 				}else{
 					console.log(err)
 				}
 			})
-
-
 		},
 	}
 }

@@ -40,7 +40,29 @@ const openNotification = (propsData) => {
   })
 }
 
-// 填充字段的定义的默认值到model中
+/**
+ * 填充字段的定义的默认值到model中
+ * 会将fields中定义地字段的默认值填充到model中来
+ * @param  {[type]} model  定义用于v-model的绑定
+ * ```
+ * {
+ *     username : null
+ *     email : null
+ * }
+ * ```
+ * @param  {[type]} fields [description]
+ * ```
+ * {
+ *      username : {
+ *          default : 'lartik'
+ *      }
+ *      ,email : {
+ *          emial : 'philisp@qq.com'
+ *      }
+ * }
+ * ```
+ * @return {[type]}        [description]
+ */
 function populateDefValToModel(model, fields){
 	Object.entries(model).forEach(([key, val]) => {
 		if(fields[key] && fields[key]['default']){
@@ -49,8 +71,33 @@ function populateDefValToModel(model, fields){
 	})
 }
 
+/**
+ * 填充后端验证返回的错误字段回来给this.errors
+ * @param  {[type]} modelErrors [description]
+ * vue-validate 中绑定的this.errors
+ * @param  {[type]} bkErrors    后端返回的错误
+ * eg:
+ * ```json
+ * {
+ *  username : ['error1', 'error2']
+ *  ,email : ['error1', 'error2']
+ * }
+ * ```
+ * @return {[type]}             [description]
+ */
+function populateBkErrsToModel(modelErrors, bkErrors){
+    if('object' == typeof bkErrors){
+        Object.entries(bkErrors).forEach(([field, fieldErrors]) => {
+            fieldErrors.forEach(msg => {
+                modelErrors.add(field, msg)
+            })
+        })
+    }
+}
+
 export {
 	openMessage
 	,openNotification
 	,populateDefValToModel
+    ,populateBkErrsToModel
 }
