@@ -46,6 +46,7 @@ export default {
 		"value",
 		"type"
 	]
+	,name : 'active-field'
 	,inject : ["$validator"]
 	,methods : {
 		updateValue(value){

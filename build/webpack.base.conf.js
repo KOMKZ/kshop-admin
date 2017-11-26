@@ -39,6 +39,7 @@ module.exports = {
 	  // vue-addon
 	  'vuex-store': path.resolve(__dirname, '../client/store'),
 	  'units': path.resolve(__dirname, '../client/units')
+      ,'models': path.resolve(__dirname, '../client/models')
 	}
   },
   module: {
@@ -61,7 +62,10 @@ module.exports = {
 	  {
 		test: /\.js$/,
 		loader: 'babel-loader',
-		include: projectRoot,
+		include: [
+            projectRoot
+            ,/vue2-datatable-component/
+        ],
 		// /node_modules\/(?!vue-bulma-.*)/
 		exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)]
 	  },

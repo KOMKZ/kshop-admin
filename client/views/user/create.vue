@@ -4,12 +4,12 @@
 			<div class="tile is-child box">
 				<form v-on:submit.prevent="sendCreate">
 					<div class="block">
-						<active-field :field="dataFields.u_username" v-model="body.u_username"></active-field>
-						<active-field :field="dataFields.password" v-model="body.password"></active-field>
-						<active-field :field="dataFields.password_confirm" v-model="body.password_confirm"></active-field>
-						<active-field :field="dataFields.u_email" v-model="body.u_email"></active-field>
-						<active-field :type="'dropdown'" :field="dataFields.u_status" v-model="body.u_status"></active-field>
-						<active-field :type="'dropdown'" :field="dataFields.u_auth_status" v-model="body.u_auth_status"></active-field>
+						<active-field :field="schema.u_username" v-model="body.u_username"></active-field>
+						<active-field :field="schema.password" v-model="body.password"></active-field>
+						<active-field :field="schema.password_confirm" v-model="body.password_confirm"></active-field>
+						<active-field :field="schema.u_email" v-model="body.u_email"></active-field>
+						<active-field :type="'dropdown'" :field="schema.u_status" v-model="body.u_status"></active-field>
+						<active-field :type="'dropdown'" :field="schema.u_auth_status" v-model="body.u_auth_status"></active-field>
 						<p class="control">
 						  <button class="button is-primary">创建</button>
 						</p>
@@ -28,59 +28,12 @@ import {
 	,populateBkErrsToModel
 } from 'units'
 import bus from "units/bus"
-
+import schema from 'models/user/UserSchema'
 export default {
 	data () {
 		let vue = this
 		return {
-			dataFields : {
-				u_username : {
-					label : '用户名'
-					,name : 'u_username'
-					,rules : 'required'
-					,default : 'abc'
-				}
-				,password : {
-					label : '密码'
-					,name : 'password'
-					,rules : 'required'
-					,type: 'password'
-					,default : 'philips'
-				}
-				,password_confirm : {
-					label : '确认密码'
-					,name : 'password_confirm'
-					,rules : 'required|ksConfirmed:password'
-					,type: 'password'
-					,default: 'philips'
-				}
-				,u_email : {
-					label : '邮箱'
-					,name : 'u_email'
-					,rules : 'required|email'
-					,default: 'philips@qq.com'
-				}
-				,u_auth_status : {
-					label : '验证状态'
-					,name : 'u_auth_status'
-					,rules : 'required'
-					,default : 'had_auth'
-					,enums : {
-						no_auth: '没有验证'
-						,had_auth: '已经验证'
-					}
-				}
-				,u_status : {
-					label : '用户状态'
-					,name : 'u_status'
-					,rules : 'required'
-					,default : 'active'
-					,enums : {
-						active: '激活状态'
-						,not_auth: "未激活状态"
-					}
-				}
-			},
+			schema,
 			body : {
 				u_username : null,
 				password : null,
@@ -93,7 +46,7 @@ export default {
 		}
 	}
 	,beforeMount(){
-		populateDefValToModel(this.body, this.dataFields)
+		populateDefValToModel(this.body, this.schema)
 	}
 	,methods : {
 		sendCreate : function(){
