@@ -5,6 +5,18 @@ const UserSchema = {
 		,rules : 'required'
 		,default : 'bayken'
 	}
+	,u_id :{
+		label : '用户id'
+		,name : 'u_id'
+	}
+	,u_created_at :{
+		label : '创建时间'
+		,name : 'u_created_at'
+	}
+	,u_updated_at :{
+		label : '更新时间'
+		,name : 'u_updated_at'
+	}
 	,password : {
 		label : '密码'
 		,name : 'password'
