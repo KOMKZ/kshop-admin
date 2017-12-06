@@ -2,7 +2,7 @@
   <div class="tile is-ancestor">
       <div class="tile is-parent">
           <div class="tile is-child box">
-              <v-server-table url="" :columns="columns" :options="options">
+              <v-server-table ref="grid" url="" :columns="columns" :options="options">
               </v-server-table>
           </div>
       </div>
@@ -48,6 +48,7 @@ export default {
       ]
       ,options: {
           requestFunction : function (data) {
+              this.$router.replace({path : '/user/list', query : data})
               return UserModel.getUserList(data)
                               .catch(function(err){
                                   this.dispatch('error', err)
@@ -64,9 +65,10 @@ export default {
       }
     }
   }
-  ,created(){
-  }
-  ,methods: {
+  ,watch : {
+      '$route'(to, from){
+          this.$refs.grid.setPage(to.query.page)
+      }
   }
 };
 </script>
