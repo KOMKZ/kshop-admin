@@ -12,7 +12,7 @@ import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
 import VeeValidate, {Validator} from 'vee-validate';
 import ValidateCnMessage from "vee-validate/dist/locale/zh_CN"
 import activeField from "components/form/activeField"
-import VueGoodTable from 'vue-good-table'
+import {ServerTable, ClientTable, Event} from 'vue-tables-2'
 
 
 
@@ -20,7 +20,8 @@ import VueGoodTable from 'vue-good-table'
 Vue.router = router
 // add global components
 Vue.component('active-field', activeField)
-Vue.use(VueGoodTable)
+Vue.use(ClientTable)
+Vue.use(ServerTable)
 // vee-validate plugins
 Validator.addLocale(ValidateCnMessage);
 Vue.use(VeeValidate, {
