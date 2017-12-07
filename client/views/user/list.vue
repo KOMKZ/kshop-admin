@@ -3,6 +3,12 @@
 	  <div class="tile is-parent">
 		  <div class="tile is-child box">
 			  <v-server-table ref="grid" url="" :columns="columns" :options="options">
+            	<template slot="u_created_at" slot-scope="props">
+                    {{props.row.u_created_at | datetime}}
+            	</template>
+                <template slot="u_updated_at" slot-scope="props">
+                    {{props.row.u_updated_at | datetime}}
+            	</template>
 			  </v-server-table>
 		  </div>
 	  </div>
@@ -26,6 +32,8 @@ console.log(...Schema.exportAsArray(UserSchema, [
 		  'u_updated_at'
 	  ], {name : 'field'}))
  */
+let moment = require('moment');
+
 const customFields = [
 	'u_id',
 	'u_username',
@@ -33,12 +41,18 @@ const customFields = [
 	'u_auth_status',
 	'u_status',
 	'u_created_at',
-	'u_updated_at'
+	'u_updated_at',
+    'erase'
 ]
-let customFieldLabels = {}
+let customFieldLabels = {
+    erase : 'erase'
+}
 customFields.forEach(name => {
-	customFieldLabels[name] = UserSchema[name]['label']
+    if(UserSchema[name]){
+        customFieldLabels[name] = UserSchema[name]['label']
+    }
 })
+
 export default {
   name: 'test',
   data(){
@@ -54,6 +68,11 @@ export default {
 								  this.dispatch('error', err)
 							  }.bind(this))
 		  }
+          ,templates: {
+              erase: function (h, row, index) {
+                  return <a>delete</a>
+              }
+          }
 		  ,responseAdapter : function(res){
 			  return {data : res.data.items, count : res.data.count}
 		  }
@@ -64,6 +83,11 @@ export default {
 		  ,headings : customFieldLabels
 	  }
 	}
+  }
+  ,filters:{
+      datetime(value){
+          return moment(Number(value) * 1000).format("YY/MM/DD hh:mm a")
+      }
   }
   ,watch : {
 	  '$route'(to, from){
