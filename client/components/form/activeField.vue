@@ -1,9 +1,10 @@
 <template>
 	<div class="block" v-if="!type">
 		<label class="label">{{field.label}}</label>
-		<p class="control has-icon has-icon-right">
+		<p :class="['control', 'has-icon', 'has-icon-right', caculateLoadingClass]">
 		  <input
-		  v-validate="field.rules"
+		  :disabled="disabled"
+		  v-validate="getRules"
 		  :class="{'input':true, 'is-danger': errors.has(field.name)}"
 		  :value="value"
 		  :name="field.name"
@@ -22,6 +23,7 @@
 		<p class="control">
 		  <span class="select is-danger">
 			<select
+			:disabled="disabled"
 			v-validate="field.rules"
 			v-on:change="updateValue($event.target.value)"
 			:value="value"
@@ -44,10 +46,27 @@ export default {
 	props : [
 		"field",
 		"value",
-		"type"
+		"type",
+		"loading",
+		"disabled",
+		"scenario"
 	]
 	,name : 'active-field'
 	,inject : ["$validator"]
+	,computed:{
+		caculateLoadingClass(){
+			return this.loading ? "is-loading" : null
+		}
+		,getRules(){
+			if('object' == typeof this.field.rules){
+				if(!this.scenario){
+					return this.field.rules['default']
+				}
+				return this.field.rules[this.scenario]
+			}
+			return this.field.rules
+		}
+	}
 	,methods : {
 		updateValue(value){
 			this.$emit('input', value)

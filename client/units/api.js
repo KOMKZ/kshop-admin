@@ -35,7 +35,7 @@ function checkRes(res){
 }
 
 function handleError(error){
-	if(new Set([400, 500, 401]).has(error.code)){
+	if(new Set([400, 500, 401, 404]).has(error.code)){
 		openNotification({
 			message : error.message,
 			type: 'danger'
@@ -69,7 +69,6 @@ export default {
 		})
 		.then(checkRes)
 		.catch(handleError)
-
 	},
 	get(url, params) {
 		return axios({

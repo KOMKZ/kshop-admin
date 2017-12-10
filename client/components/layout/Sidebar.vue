@@ -80,7 +80,9 @@ export default {
         expanded: !item.meta.expanded
       })
     },
+    shouldAlterHref(route){
 
+    },
     shouldExpandMatchItem (route) {
       let matched = route.matched
       let lastMatched = matched[matched.length - 1]
@@ -126,6 +128,7 @@ export default {
     $route (route) {
       this.isReady = true
       this.shouldExpandMatchItem(route)
+      this.shouldAlterHref(route)
     }
   }
 

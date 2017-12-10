@@ -27,5 +27,13 @@ export default {
 		link: 'user/create.vue'
 	  }
 	}
+    ,{
+	  name: '更新用户',
+	  path: 'update',
+	  component: lazyLoading('user/update'),
+	  meta: {
+		link: 'user/update.vue'
+	  }
+	}
   ]
 }

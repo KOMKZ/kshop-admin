@@ -71,7 +71,12 @@ $fa-font-path: '~font-awesome/fonts/';
 html {
   background-color: whitesmoke;
 }
-
+.has-text-danger{
+    color: $danger
+}
+.has-text-info{
+    color: $info
+}
 .nprogress-container {
   position: fixed !important;
   width: 100%;

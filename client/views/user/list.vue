@@ -6,9 +6,26 @@
             	<template slot="u_created_at" slot-scope="props">
                     {{props.row.u_created_at | datetime}}
             	</template>
+                <template slot="u_auth_status" slot-scope="props">
+                    {{props.row.u_auth_status | covertToLabel('u_auth_status')}}
+            	</template>
+                <template slot="u_status" slot-scope="props">
+                    <span :class="getUStatusTextClasses(props.row.u_status)">{{props.row.u_status | covertToLabel('u_status')}}</span>
+            	</template>
                 <template slot="u_updated_at" slot-scope="props">
                     {{props.row.u_updated_at | datetime}}
             	</template>
+                <template slot="operations" slot-scope="props">
+                    <router-link
+                    :to="{ path: '/user/update', query : {u_id : props.row.u_id}}"
+                    class="button is-small is-info  "
+                    >
+                    修改</router-link>
+
+                    <button @click="toggleUserStatus(props.row, $event)" v-if="'locked' == props.row.u_status" type="button" class="button is-small is-primary" name="button">解锁</button>
+                    <button @click="toggleUserStatus(props.row, $event)" type="button" v-else class="button is-small is-warning" name="button">锁定</button>
+            	</template>
+
 			  </v-server-table>
 		  </div>
 	  </div>
@@ -42,10 +59,10 @@ const customFields = [
 	'u_status',
 	'u_created_at',
 	'u_updated_at',
-    'erase'
+    'operations'
 ]
 let customFieldLabels = {
-    erase : 'erase'
+    operations : '操作'
 }
 customFields.forEach(name => {
     if(UserSchema[name]){
@@ -58,8 +75,6 @@ export default {
   data(){
 	return {
 	  columns: customFields
-	  ,rows: [
-	  ]
 	  ,options: {
 		  requestFunction : function (data) {
 			  this.$router.replace({path : '/user/list', query : data})
@@ -68,11 +83,6 @@ export default {
 								  this.dispatch('error', err)
 							  }.bind(this))
 		  }
-          ,templates: {
-              erase: function (h, row, index) {
-                  return <a>delete</a>
-              }
-          }
 		  ,responseAdapter : function(res){
 			  return {data : res.data.items, count : res.data.count}
 		  }
@@ -84,9 +94,33 @@ export default {
 	  }
 	}
   }
+  ,methods:{
+      toggleUserStatus(user, event){
+          console.log(event.target)
+          // 需要判断是不是本人自己
+          UserModel.updateUserByUid(user.u_id, {
+              u_status : 'locked' == user.u_status ? "active" : "locked"
+          })
+          .then(res => {
+              this.$refs.grid.refresh()
+          })
+      }
+      ,getUStatusTextClasses(u_status){
+          return 'locked' != u_status ?
+                 "has-text-info"
+                 :
+                 "has-text-danger"
+      }
+  }
   ,filters:{
       datetime(value){
           return moment(Number(value) * 1000).format("YY/MM/DD hh:mm a")
+      }
+      ,covertToLabel(value, name){
+          if(UserSchema[name] && UserSchema[name] && UserSchema[name]['enums'].hasOwnProperty(value)){
+              return UserSchema[name]['enums'][value];
+          }
+          return value
       }
   }
   ,watch : {
@@ -106,4 +140,5 @@ export default {
 </script>
 
 <style lang="scss">
+
 </style>

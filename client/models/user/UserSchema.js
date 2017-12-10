@@ -3,7 +3,6 @@ const UserSchema = {
 		label : '用户名'
 		,name : 'u_username'
 		,rules : 'required'
-		,default : 'bayken'
 	}
 	,u_id :{
 		label : '用户id'
@@ -20,22 +19,25 @@ const UserSchema = {
 	,password : {
 		label : '密码'
 		,name : 'password'
-		,rules : 'required'
+		,rules : {
+			default : "required"
+			,update : ""
+		}
 		,type: 'password'
-		,default : 'philips'
 	}
 	,password_confirm : {
 		label : '确认密码'
 		,name : 'password_confirm'
-		,rules : 'required|ksConfirmed:password'
+		,rules : {
+			default : 'required|ksConfirmed:password'
+			,update : "ksConfirmed:password"
+		}
 		,type: 'password'
-		,default: 'philips'
 	}
 	,u_email : {
 		label : '邮箱'
 		,name : 'u_email'
 		,rules : 'required|email'
-		,default: 'bayken@qq.com'
 	}
 	,u_auth_status : {
 		label : '验证状态'
@@ -43,7 +45,7 @@ const UserSchema = {
 		,rules : 'required'
 		,default : 'had_auth'
 		,enums : {
-			no_auth: '没有验证'
+			not_auth: '没有验证'
 			,had_auth: '已经验证'
 		}
 	}
@@ -55,6 +57,7 @@ const UserSchema = {
 		,enums : {
 			active: '激活状态'
 			,not_auth: "未激活状态"
+			,locked: "锁定状态"
 		}
 	}
 }

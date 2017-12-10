@@ -2,6 +2,8 @@
 	<div class="tile is-ancestor">
 		<div class="tile is-parent is-4">
 			<div class="tile is-child box">
+				<loader-btn @click.native="demo($event)">btn1</loader-btn>
+				<loader-btn @click.native="demo($event)">btn2</loader-btn>
 				<form v-on:submit.prevent="sendCreate">
 					<div class="block">
 						<active-field :field="schema.u_username" v-model="body.u_username"></active-field>
@@ -29,6 +31,7 @@ import {
 } from 'units'
 import bus from "units/bus"
 import schema from 'models/user/UserSchema'
+import LoaderBus from "components/ui/LoaderBus"
 export default {
 	data () {
 		let vue = this
@@ -71,10 +74,15 @@ export default {
 					console.log(err)
 				}
 			})
-		},
+		}
+		,demo($event){
+			LoaderBus.$emit('begin-loading', $event);
+		}
 	}
 }
 </script>
 
 <style lang="scss">
+
+
 </style>
