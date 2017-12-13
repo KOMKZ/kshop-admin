@@ -1,7 +1,7 @@
 import * as types from '../../mutation-types'
 import lazyLoading from './lazyLoading'
 import user from './user'
-import product from './product'
+import goods from './goods'
 
 // show: meta.label -> name
 // name: component name
@@ -19,7 +19,7 @@ const state = {
 	  component: lazyLoading('Home', true)
 	}
 	,user
-	,product
+	,goods
   ]
 }
 
